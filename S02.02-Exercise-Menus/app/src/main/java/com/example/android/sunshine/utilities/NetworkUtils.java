@@ -81,7 +81,6 @@ public final class NetworkUtils {
                 .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
                 .appendQueryParameter(KEY_PARAM, key)
                 .build();
-
         URL url = null;
         try {
             url = new URL(builtUri.toString());
