@@ -15,13 +15,17 @@
  */
 package com.example.android.sunshine;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.utilities.NetworkUtils;
@@ -83,9 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
             String location = params[0];
             URL searchURL = NetworkUtils.buildUrl(location);
+            Log.i(LOG_TAG, "URL: " + searchURL.toString());
             String[] simpleJsonWeatherData = new String[0];
             try {
                 String weatherSearchResults = NetworkUtils.getResponseFromHttpUrl(searchURL);
+                Log.i(LOG_TAG, "json data: " + weatherSearchResults);
                 simpleJsonWeatherData = OpenWeatherJsonUtils
                         .getSimpleWeatherStringsFromJson(MainActivity.this, weatherSearchResults);
 
@@ -114,12 +120,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TODO (2) Create a menu resource in res/menu/ called forecast.xml
-    // TODO (3) Add one item to the menu with an ID of action_refresh
-    // TODO (4) Set the title of the menu item to "Refresh" using strings.xml
+    // (2) Create a menu resource in res/menu/ called forecast.xml
+    // (3) Add one item to the menu with an ID of action_refresh
+    // (4) Set the title of the menu item to "Refresh" using strings.xml
 
-    // TODO (5) Override onCreateOptionsMenu to inflate the menu for this Activity
-    // TODO (6) Return true to display the menu
+    // (5) Override onCreateOptionsMenu to inflate the menu for this Activity
+    // (6) Return true to display the menu
 
-    // TODO (7) Override onOptionsItemSelected to handle clicks on the refresh button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.forecast, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            // Respond to a click on the "Search" menu option
+            case R.id.action_refresh:
+                //clear the screen
+                mWeatherTextView.setText("");
+                // show a Toast message, that the refresh option was selected
+                Context context = getApplicationContext();
+                CharSequence text = "Refresh item selected: " + R.id.action_refresh;
+                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+                toast.show();
+                // re-load the weather data
+                loadWeatherData();
+                return true;
+            default:
+                /* an unknown menu item Id was passed */
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    // (7) Override onOptionsItemSelected to handle clicks on the refresh button
 }
